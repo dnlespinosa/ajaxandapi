@@ -35,7 +35,6 @@ async function searchShows(query) {
     }
     arr.push(obj);
   }
-  // WHY DOESN'T THIS RETURN AN ARRAY!!!!
   return arr;
 }
 
@@ -57,14 +56,27 @@ function populateShows(shows) {
            <div class="card-body">
              <h5 class="card-title">${show.name}</h5>
              <p class="card-text">${show.summary}</p>
+             <button id='episode-button'>GET EPISODES</button>
            </div>
          </div>
+
        </div>
+       
       `);
 
     $showsList.append($item);
-  }
-}
+    
+    }
+    let btn = document.querySelectorAll('episode-button');
+    btn.forEach(
+      addEventListener('click', function(event){
+        event.preventDefault();
+        let btn = event.target
+        let id = btn.parentElement.parentElement.dataset.showId;
+        populateEpsiodes(getEpisodes(id))
+      }))
+  };
+
 
 
 /** Handle search form submission:
@@ -106,6 +118,22 @@ async function getEpisodes(id) {
     arr.push(obj);
   }
   // TODO: return array-of-episode-info, as described in docstring above
-  // WHY DOESNT THIS RETURN AN ARRAY!!!!!
   return arr;
 }
+
+function populateEpsiodes(arr){
+  let epiList = document.getElementById('episodes-list');
+  document.getElementById('episodes-area').style.display = 'inline';
+  Promise.resolve(arr).then(function(arrVal){
+    for (let episode of arrVal){
+      let li = document.createElement('li');
+      li.innerText = `${episode.name} (season: ${episode.season}, episode:${episode.number})`;
+      li.id = 'list-item';
+      epiList.append(li);
+    }
+})
+};
+
+
+
+
